@@ -1,61 +1,80 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, PermissionsAndroid, Platform } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
-import { PermissionsAndroid, Platform } from 'react-native';
+import base64 from 'react-native-base64';
 
-const BluetoothComponent = () => {
-  const manager = new BleManager();
+const SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb'; // Replace with your service UUID
+const CHARACTERISTIC_UUID = '00005678-0000-1000-8000-00805f9b34fb'; // Replace with your characteristic UUID
+
+const BluetoothSender = () => {
+  const [manager] = useState(new BleManager());
+  const [device, setDevice] = useState(null);
 
   useEffect(() => {
-    const startScan = async () => {
-      if (Platform.OS === 'android' && Platform.Version >= 23) {
-        const granted = await PermissionsAndroid.requestMultiple([
+    const requestPermissions = async () => {
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         ]);
-        const allGranted = Object.values(granted).every(p => p === PermissionsAndroid.RESULTS.GRANTED);
-        if (!allGranted) {
-          console.warn('Required permissions not granted');
-          return;
-        }
       }
+    };
 
-      manager.startDeviceScan(null, null, (error, device) => {
+    const connectToDevice = async () => {
+      manager.startDeviceScan(null, null, async (error, scannedDevice) => {
         if (error) {
-          console.log('Scan error:', error);
+          console.warn(error);
           return;
         }
 
-        if (device?.name) {
-          console.log(`Discovered device: ${device.name} [${device.id}]`);
-
-          // Example: connect to device
-          if (device.name === 'MyBLEDevice') {
-            manager.stopDeviceScan();
-
-            device.connect()
-              .then(d => d.discoverAllServicesAndCharacteristics())
-              .then(d => {
-                console.log('Connected to', d.name);
-                // Read/write characteristics here
-              })
-              .catch(err => {
-                console.error('Connection error:', err);
-              });
+        if (scannedDevice?.name === 'MyBLEDevice') {
+          manager.stopDeviceScan();
+          try {
+            const connectedDevice = await scannedDevice.connect();
+            await connectedDevice.discoverAllServicesAndCharacteristics();
+            setDevice(connectedDevice);
+            console.log('Connected to', connectedDevice.name);
+          } catch (err) {
+            console.error('Connection error:', err);
           }
         }
       });
     };
 
-    startScan();
+    requestPermissions().then(connectToDevice);
 
     return () => {
       manager.destroy();
     };
-  }, []);
+  }, [manager]);
 
-  return null;
+  const sendNumber = async (number) => {
+    if (!device) {
+      console.warn('No connected device');
+      return;
+    }
+
+    const encoded = base64.encode(number.toString()); // Send as base64-encoded string
+    try {
+      await device.writeCharacteristicWithResponseForService(
+        SERVICE_UUID,
+        CHARACTERISTIC_UUID,
+        encoded
+      );
+      console.log(`Sent number ${number}`);
+    } catch (err) {
+      console.error('Write error:', err);
+    }
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Bluetooth Number Sender</Text>
+      <Button title="Send 42" onPress={() => sendNumber(42)} />
+    </View>
+  );
 };
 
-export default BluetoothComponent;
+export default BluetoothSender;
 
