@@ -1,30 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, PermissionsAndroid, Platform } from 'react-native';
+import { Button, View, Text, PermissionsAndroid, Platform } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import base64 from 'react-native-base64';
 
-const SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb'; // Replace with your service UUID
-const CHARACTERISTIC_UUID = '00005678-0000-1000-8000-00805f9b34fb'; // Replace with your characteristic UUID
+const manager = new BleManager();
 
-const BluetoothSender = () => {
-  const [manager] = useState(new BleManager());
+export default function App() {
   const [device, setDevice] = useState(null);
 
   useEffect(() => {
-    const requestPermissions = async () => {
+    const scanAndConnect = async () => {
       if (Platform.OS === 'android') {
         await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         ]);
       }
-    };
 
-    const connectToDevice = async () => {
       manager.startDeviceScan(null, null, async (error, scannedDevice) => {
         if (error) {
-          console.warn(error);
+          console.error(error);
           return;
         }
 
@@ -34,7 +30,7 @@ const BluetoothSender = () => {
             const connectedDevice = await scannedDevice.connect();
             await connectedDevice.discoverAllServicesAndCharacteristics();
             setDevice(connectedDevice);
-            console.log('Connected to', connectedDevice.name);
+            console.log('Connected to:', connectedDevice.name);
           } catch (err) {
             console.error('Connection error:', err);
           }
@@ -42,39 +38,36 @@ const BluetoothSender = () => {
       });
     };
 
-    requestPermissions().then(connectToDevice);
+    scanAndConnect();
 
     return () => {
       manager.destroy();
     };
-  }, [manager]);
+  }, []);
 
-  const sendNumber = async (number) => {
-    if (!device) {
-      console.warn('No connected device');
-      return;
-    }
+  const sendNumber = async (num) => {
+    if (!device) return;
 
-    const encoded = base64.encode(number.toString()); // Send as base64-encoded string
+    const serviceUUID = 'YOUR_SERVICE_UUID';
+    const characteristicUUID = 'YOUR_CHARACTERISTIC_UUID';
+    const value = base64.encode(String(num)); // Convert to base64
+
     try {
       await device.writeCharacteristicWithResponseForService(
-        SERVICE_UUID,
-        CHARACTERISTIC_UUID,
-        encoded
+        serviceUUID,
+        characteristicUUID,
+        value
       );
-      console.log(`Sent number ${number}`);
-    } catch (err) {
-      console.error('Write error:', err);
+      console.log('Sent:', num);
+    } catch (error) {
+      console.error('Write failed:', error);
     }
   };
 
   return (
     <View style={{ padding: 20 }}>
-      <Text>Bluetooth Number Sender</Text>
-      <Button title="Send 42" onPress={() => sendNumber(42)} />
+      <Text>{device ? `Connected to ${device.name}` : 'Scanning...'}</Text>
+      <Button title="Send Number 42" onPress={() => sendNumber(42)} />
     </View>
   );
-};
-
-export default BluetoothSender;
-
+}
