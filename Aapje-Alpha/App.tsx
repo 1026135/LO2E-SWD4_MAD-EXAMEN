@@ -90,7 +90,9 @@ export default function App() {
 
   useEffect(() => {
     requestPermissions();
-    return () => manager.destroy();
+    return () => {
+      manager.destroy();
+    };
   }, []);
 
   return (
