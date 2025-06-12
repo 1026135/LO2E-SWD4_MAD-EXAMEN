@@ -1,3 +1,4 @@
+// App.tsx
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,32 +13,34 @@ import StatsScreen from './screens/StatsScreen';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(props) {
+// Custom drawer with Logout
+function CustomDrawerContent(props: any) {
   return (
     <DrawerContentScrollView {...props}>
-      {props.state.routeNames.map((name, index) =>
-        name !== 'Logout' ? (
-          <DrawerItem
-            key={index}
-            label={name}
-            onPress={() => props.navigation.navigate(name)}
-          />
-        ) : null
-      )}
+      {props.state.routeNames.map((name: string, index: number) => (
+        <DrawerItem
+          key={index}
+          label={name}
+          onPress={() => props.navigation.navigate(name)}
+        />
+      ))}
       <DrawerItem
         label="Logout"
         onPress={() => {
-          props.navigation.closeDrawer();
-          props.navigation.replace('Login');
+          props.navigation.replace('Login'); // go back to login
         }}
       />
     </DrawerContentScrollView>
   );
 }
 
+// Drawer navigator shown *after login*
 function DashboardDrawer() {
   return (
-    <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
+    <Drawer.Navigator
+      initialRouteName="Dashboard"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen name="Dashboard" component={DashboardScreen} />
       <Drawer.Screen name="Logs" component={LogsScreen} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
@@ -46,14 +49,14 @@ function DashboardDrawer() {
   );
 }
 
+// Root app navigation
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Dashboard" component={DashboardDrawer} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
