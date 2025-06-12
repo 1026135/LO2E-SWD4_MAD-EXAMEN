@@ -1,17 +1,19 @@
-// screens/LogsScreen.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Header from '../components/Header';
 
 export default function LogsScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Logs</Text>
-      <Text>Hier zie je je logs.</Text>
+      <Header title="Logs" />
+      <View style={styles.content}>
+        <Text>Log history will appear here.</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+  container: { flex: 1 },
+  content: { padding: 20 },
 });

@@ -7,31 +7,39 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../Navigation'; // adjust if needed
 
-type RootStackParamList = {
-  Login: undefined;
-  Dashboard: undefined;
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+type Props = {
+  navigation: LoginScreenNavigationProp;
 };
-
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 export default function LoginScreen({ navigation }: Props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    if (username === '' || password === '') {
+    if (!username || !password) {
       Alert.alert('Vul beide velden in');
       return;
     }
+
+    // In real life: call your AuthService here
+
     console.log('Inloggen met:', username, password);
-    navigation.replace('Dashboard');
+    navigation.replace('Dashboard'); // Replace so back button doesn't return to login
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <Text style={styles.title}>Aapje Alpha Controle App</Text>
 
       <TextInput
@@ -40,6 +48,7 @@ export default function LoginScreen({ navigation }: Props) {
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
+        returnKeyType="next"
       />
 
       <TextInput
@@ -48,19 +57,53 @@ export default function LoginScreen({ navigation }: Props) {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        returnKeyType="done"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F0F8F5', alignItems: 'center', justifyContent: 'center', padding: 24 },
-  title: { fontSize: 22, marginBottom: 32, fontWeight: 'bold', color: '#1B5E20' },
-  input: { width: '100%', borderColor: '#A5D6A7', borderWidth: 1, borderRadius: 12, padding: 16, marginBottom: 20, fontSize: 16, backgroundColor: '#fff' },
-  button: { backgroundColor: '#388E3C', borderRadius: 10, paddingVertical: 14, paddingHorizontal: 32, elevation: 3 },
-  buttonText: { color: 'white', fontSize: 16, textAlign: 'center', fontWeight: 'bold' },
+  container: {
+    flex: 1,
+    backgroundColor: '#F0F8F5',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: {
+    fontSize: 22,
+    marginBottom: 32,
+    fontWeight: 'bold',
+    color: '#1B5E20',
+    textAlign: 'center',
+  },
+  input: {
+    width: '100%',
+    borderColor: '#A5D6A7',
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    fontSize: 16,
+    backgroundColor: '#ffffff',
+  },
+  button: {
+    backgroundColor: '#388E3C',
+    borderRadius: 10,
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    elevation: 3,
+    width: '100%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 });
