@@ -11,7 +11,11 @@ import {
   Platform,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../Navigation'; // adjust if needed
+
+type RootStackParamList = {
+  Login: undefined;
+  Drawer: undefined;
+};
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -29,10 +33,10 @@ export default function LoginScreen({ navigation }: Props) {
       return;
     }
 
-    // In real life: call your AuthService here
+    // Here you can add authentication logic (e.g., API call)
 
     console.log('Inloggen met:', username, password);
-    navigation.replace('Dashboard'); // Replace so back button doesn't return to login
+    navigation.replace('Drawer'); // navigate to drawer and remove login from stack
   };
 
   return (
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
   },
   button: {
     backgroundColor: '#388E3C',
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
-    textAlign: 'center',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
