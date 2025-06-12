@@ -6,7 +6,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@rea
 
 import LoginScreen from './screens/LoginScreen';
 import DashboardScreen from './screens/DashboardScreen';
-import LogsScreen from './screens/LogsScreen';
+import LogsScreen from './screens/LogScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import StatsScreen from './screens/StatsScreen';
 
