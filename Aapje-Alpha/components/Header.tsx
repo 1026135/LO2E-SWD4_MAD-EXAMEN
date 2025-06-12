@@ -25,13 +25,13 @@ export default function Header({ title }: HeaderProps) {
 
 const styles = StyleSheet.create({
   header: {
-    height: 56, // standard Android appbar height
+    height: 56,
     backgroundColor: '#388E3C',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    elevation: 4, // nice shadow on Android
+    elevation: 4,
   },
   title: {
     color: '#fff',
