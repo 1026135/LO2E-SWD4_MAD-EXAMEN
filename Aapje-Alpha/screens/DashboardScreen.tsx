@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import Header from '../components/Header';
+import { View, Text, Button, Alert, StyleSheet } from 'react-native';
 import { bluetoothManager } from '../services/BluetoothManager';
-import { Device } from 'react-native-ble-plx';
+import { logAction } from '../services/api';
 
 export default function DashboardScreen() {
-  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [device, setDevice] = useState(null);
 
-  const connectToRobot = () => {
-    bluetoothManager.scanForDevices(async (device) => {
-      try {
-        const connected = await bluetoothManager.connectToDevice(device);
-        setConnectedDevice(connected);
-        Alert.alert('Verbonden met robot: ' + connected.name);
-      } catch (error) {
-        Alert.alert('Verbindingsfout', String(error));
-      }
-    });
+  const connect = async () => {
+    try {
+      const foundDevice = await bluetoothManager.scanForDevicesOnce();
+      const connectedDevice = await bluetoothManager.connectToDevice(foundDevice);
+      setDevice(connectedDevice);
+      Alert.alert('Verbonden met: ' + connectedDevice.name);
+    } catch (e) {
+      Alert.alert('Fout bij verbinden:', e.message || e.toString());
+    }
   };
 
-  const sendCommand = (command: string) => {
-    if (!connectedDevice) {
-      Alert.alert('Eerst verbinden met de robot.');
+  const sendCommand = async () => {
+    if (!device) {
+      Alert.alert('Verbind eerst met de robot.');
       return;
     }
 
-    // Vervang deze UUIDs met die van jouw robot (vraag leverancier indien onbekend)
-    const SERVICE_UUID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
-    const CHARACTERISTIC_UUID = 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy';
+    try {
+      const SERVICE_UUID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+      const CHARACTERISTIC_UUID = 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy';
 
-    bluetoothManager.sendCommand(connectedDevice, SERVICE_UUID, CHARACTERISTIC_UUID, command);
+      await bluetoothManager.sendCommand(device, SERVICE_UUID, CHARACTERISTIC_UUID, '5');
+
+      // Log naar API sturen
+      const userId = 'demo-gebruiker'; // later vervangen door echte user-id
+      await logAction(userId, 5);
+
+      Alert.alert('Commando 5 verzonden en gelogd!');
+    } catch (e) {
+      Alert.alert('Fout bij verzenden of loggen:', e.message || e.toString());
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Header title="Dashboard" />
-      <View style={styles.content}>
-        <Text style={styles.status}>
-          {connectedDevice
-            ? `Verbonden met: ${connectedDevice.name}`
-            : 'Nog niet verbonden met robot'}
-        </Text>
-        <Button title="Verbind met Aapje Alpha" onPress={connectToRobot} />
-        <View style={styles.spacing} />
-        <Button title="Stuur Commando 5 (Vooruit)" onPress={() => sendCommand('5')} disabled={!connectedDevice} />
-      </View>
+      <Text style={styles.status}>
+        {device ? 'Verbonden met: ' + device.name : 'Nog niet verbonden'}
+      </Text>
+      <Button title="Verbind met robot" onPress={connect} />
+      <View style={{ height: 20 }} />
+      <Button title="Stuur Commando 5" onPress={sendCommand} disabled={!device} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  content: { padding: 20 },
-  spacing: { height: 20 },
-  status: { marginBottom: 10, fontSize: 16 },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  status: { marginBottom: 10, fontSize: 16, textAlign: 'center' },
 });
