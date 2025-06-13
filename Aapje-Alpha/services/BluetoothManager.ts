@@ -1,63 +1,70 @@
-// services/BluetoothManager.ts
 import { BleManager, Device } from 'react-native-ble-plx';
 import { PermissionsAndroid, Platform } from 'react-native';
 
 class BluetoothManager {
-  manager: BleManager;
+  private manager: BleManager;
+  private scanning: boolean;
 
   constructor() {
     this.manager = new BleManager();
+    this.scanning = false;
   }
 
-  async requestPermissions() {
-    if (Platform.OS === 'android' && Platform.Version >= 23) {
-      const granted = await PermissionsAndroid.requestMultiple([
+  async requestPermissions(): Promise<void> {
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ]);
-      return (
-        granted['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
-        granted['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED
-      );
     }
-    return true;
   }
 
-  async scanForDevices(onDeviceFound: (device: Device) => void) {
-    const permissionGranted = await this.requestPermissions();
-    if (!permissionGranted) {
-      console.log('Bluetooth-permissie geweigerd');
-      return;
-    }
+  startScan(
+    onDeviceFound: (device: Device) => void,
+    onError?: (error: Error) => void
+  ): void {
+    if (this.scanning) return;
 
+    this.scanning = true;
     this.manager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.error('Scanfout:', error);
+        console.error('Scan error:', error);
+        this.scanning = false;
+        if (onError) onError(error);
         return;
       }
 
-      if (device?.name?.includes('Aapje') || device?.localName?.includes('Aapje')) {
-        console.log('Gevonden apparaat:', device.name);
-        this.manager.stopDeviceScan();
+      if (device && device.name) {
         onDeviceFound(device);
       }
     });
+
+    setTimeout(() => {
+      this.stopScan();
+    }, 10000);
   }
 
-  async connectToDevice(device: Device): Promise<Device> {
-    const connectedDevice = await device.connect();
-    console.log('Verbonden met:', connectedDevice.name);
-
-    await connectedDevice.discoverAllServicesAndCharacteristics();
-    return connectedDevice;
+  stopScan(): void {
+    this.manager.stopDeviceScan();
+    this.scanning = false;
   }
 
-  async sendCommand(device: Device, serviceUUID: string, characteristicUUID: string, command: string) {
-    const base64Command = Buffer.from(command, 'utf8').toString('base64');
-    await device.writeCharacteristicWithResponseForService(serviceUUID, characteristicUUID, base64Command);
-    console.log('Commando verzonden:', command);
+  async connectToDevice(device: Device): Promise<Device | null> {
+    try {
+      const connectedDevice = await this.manager.connectToDevice(device.id);
+      await connectedDevice.discoverAllServicesAndCharacteristics();
+      return connectedDevice;
+    } catch (error) {
+      console.error('Connection error:', error);
+      return null;
+    }
+  }
+
+  destroy(): void {
+    this.manager.destroy();
   }
 }
 
-export const bluetoothManager = new BluetoothManager();
+const bluetoothManager = new BluetoothManager();
+export default bluetoothManager;
