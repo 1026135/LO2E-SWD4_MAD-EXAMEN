@@ -1,4 +1,4 @@
-package com.mastermunaf.mybleapp
+package com.anonymous.AapjeAlpha
 
 import android.app.Application
 import android.content.res.Configuration

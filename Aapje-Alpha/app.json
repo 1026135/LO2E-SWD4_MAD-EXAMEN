@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myBLEapp",
-    "slug": "myBLEapp",
+    "name": "Aapje-Alpha",
+    "slug": "Aapje-Alpha",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,12 +16,12 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.mastermunaf.mybleapp",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.AapjeAlpha"
     },
     "web": {
       "favicon": "./assets/favicon.png"

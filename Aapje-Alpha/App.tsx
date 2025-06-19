@@ -1,3 +1,13 @@
+/*
+// App.tsx
+import React from 'react';
+import BluetoothScanner from './components/BluetoothScanner';
+
+export default function App() {
+  return <BluetoothScanner />;
+}
+*/
+
 // App.tsx
 import React, { useEffect, useState } from 'react';
 import {
@@ -90,9 +100,7 @@ export default function App() {
 
   useEffect(() => {
     requestPermissions();
-    return () => {
-      manager.destroy();
-    };
+    return () => manager.destroy();
   }, []);
 
   return (
