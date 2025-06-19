@@ -18,22 +18,26 @@ export default function Dashboard({ route }: any) {
   const [username] = useState(route.params?.username || 'onbekend');
 
   const sendNumber = async (num: string) => {
-    try {
-      await BLEService.send(num);
+  try {
+    await BLEService.send(num);
 
-      // log to backend
-      await fetch('http://YOUR_SERVER_IP:3000/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, number: num }),
-      });
+    // ✅ Send to Internus API
+    await fetch('https://to.internus.info/api/monkeyalpha', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user: username,
+        command: num,
+      }),
+    });
 
-      Alert.alert('Verzonden', `Nummer ${num} is verzonden naar Arduino`);
-    } catch (err) {
-      console.error('Fout:', err);
-      Alert.alert('Fout', 'Kon nummer niet verzenden of loggen');
-    }
-  };
+    Alert.alert('Verzonden', `Nummer ${num} is verzonden en gelogd`);
+  } catch (err) {
+    console.error('Fout:', err);
+    Alert.alert('Fout', 'Kon nummer niet verzenden of loggen');
+  }
+};
+
 
   return (
     <View style={styles.container}>
