@@ -8,10 +8,10 @@ app.use(express.json());
 app.use(cors());
 
 const config = {
-  user: 'YOUR_DB_USER',
-  password: 'YOUR_DB_PASSWORD',
-  server: 'YOUR_DB_SERVER',
-  database: 'YOUR_DB_NAME',
+  user:         'YOUR_DB_USER',
+  password:     'YOUR_DB_PASSWORD',
+  server:       'YOUR_DB_SERVER',
+  database:     'YOUR_DB_NAME',
   options: {
     encrypt: true,
     trustServerCertificate: true,
