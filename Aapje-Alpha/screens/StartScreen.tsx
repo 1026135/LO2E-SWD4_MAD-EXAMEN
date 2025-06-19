@@ -1,11 +1,8 @@
 // screens/StartScreen.tsx
 import React, { useEffect, useState } from 'react';
-import {
-  View, Text, Button, FlatList, Alert, PermissionsAndroid, Platform,
-} from 'react-native';
-import { BleManager, Device } from 'react-native-ble-plx';
-
-const manager = new BleManager();
+import { View, Text, Button, FlatList, Alert, PermissionsAndroid, Platform } from 'react-native';
+import { Device } from 'react-native-ble-plx';
+import BLEService from '../services/BLEService';
 
 export default function StartScreen({ navigation }: any) {
   const [devices, setDevices] = useState<Device[]>([]);
@@ -25,7 +22,7 @@ export default function StartScreen({ navigation }: any) {
     setDevices([]);
     setScanning(true);
 
-    manager.startDeviceScan(null, null, async (error, device) => {
+    BLEService.manager.startDeviceScan(null, null, async (error, device) => {
       if (error) {
         console.log(error);
         setScanning(false);
@@ -33,15 +30,13 @@ export default function StartScreen({ navigation }: any) {
       }
 
       if (device?.name?.includes('HMSoft')) {
-        manager.stopDeviceScan();
+        BLEService.manager.stopDeviceScan();
         setScanning(false);
-
         try {
-          const connected = await device.connect();
-          await connected.discoverAllServicesAndCharacteristics();
+          await BLEService.connectTo(device);
           Alert.alert('Verbonden', `Met ${device.name}`);
           navigation.replace('Login');
-        } catch (err) {
+        } catch {
           Alert.alert('Fout', 'Kan niet verbinden');
         }
       }
@@ -52,16 +47,14 @@ export default function StartScreen({ navigation }: any) {
     });
 
     setTimeout(() => {
-      manager.stopDeviceScan();
+      BLEService.manager.stopDeviceScan();
       setScanning(false);
     }, 10000);
   };
 
   useEffect(() => {
     requestPermissions();
-    return () => {
-      manager.destroy().catch(console.error);
-    };
+    return () => BLEService.destroy();
   }, []);
 
   return (
