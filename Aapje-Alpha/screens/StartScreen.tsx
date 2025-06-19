@@ -35,7 +35,9 @@ export default function StartScreen({ navigation }: any) {
         try {
           await BLEService.connectTo(device);
           Alert.alert('Verbonden', `Met ${device.name}`);
-          navigation.replace('Login');
+          setTimeout(() => {
+            navigation.replace('Login');
+          }, 10000);
         } catch {
           Alert.alert('Fout', 'Kan niet verbinden');
         }
