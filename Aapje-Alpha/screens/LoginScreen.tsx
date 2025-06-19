@@ -8,7 +8,7 @@ export default function LoginScreen({ navigation }: any) {
 
   const handleLogin = () => {
     if (username === 'admin' && password === '1234') {
-      navigation.replace('Dashboard');
+      navigation.replace('Dashboard', { username })
     } else {
       Alert.alert('Fout', 'Onjuiste inloggegevens');
     }
