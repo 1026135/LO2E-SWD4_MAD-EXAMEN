@@ -37,7 +37,7 @@ export default function Dashboard({ route }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Stuur een getal naar Arduino</Text>
+      <Text style={styles.title}>Stuur een getal naar Aapje Alpha</Text>
       <View style={styles.grid}>
         {numbers.map(num => (
           <TouchableOpacity key={num} style={styles.button} onPress={() => sendNumber(num)}>
