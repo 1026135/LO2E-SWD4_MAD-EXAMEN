@@ -14,7 +14,7 @@ export default function DrawerNavigator({ navigation }: any) {
     <Drawer.Navigator>
       <Drawer.Screen name="Home" component={Dashboard} />
       <Drawer.Screen name="Actielogboek" component={Actielogboek} />
-      <Drawer.Screen name="Statistieken-overzicht" component={Statistieken} />
+      <Drawer.Screen name="Statistieken" component={Statistieken} />
       <Drawer.Screen name="Instellingen" component={Instellingen} />
       <Drawer.Screen
         name="Logout"
