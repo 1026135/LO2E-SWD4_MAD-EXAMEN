@@ -8,19 +8,30 @@ export default function Dashboard() {
 */
 
 // screens/Dashboard.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import BLEService from '../services/BLEService';
 
 const numbers = Array.from({ length: 10 }, (_, i) => i.toString());
 
-export default function Dashboard() {
+export default function Dashboard({ route }: any) {
+  const [username] = useState(route.params?.username || 'onbekend');
+
   const sendNumber = async (num: string) => {
     try {
       await BLEService.send(num);
+
+      // log to backend
+      await fetch('http://YOUR_SERVER_IP:3000/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, number: num }),
+      });
+
       Alert.alert('Verzonden', `Nummer ${num} is verzonden naar Arduino`);
     } catch (err) {
-      Alert.alert('Fout', 'Kon nummer niet verzenden');
+      console.error('Fout:', err);
+      Alert.alert('Fout', 'Kon nummer niet verzenden of loggen');
     }
   };
 
