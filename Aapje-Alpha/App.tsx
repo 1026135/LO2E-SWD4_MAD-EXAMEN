@@ -11,15 +11,7 @@ export default function App() {
 // App.tsx
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  FlatList,
-  Button,
-  TextInput,
-  StyleSheet,
-  Platform,
-  PermissionsAndroid,
-  Alert,
+  View, Text, FlatList, Button, TextInput, StyleSheet, Platform, PermissionsAndroid, Alert,
 } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
@@ -91,10 +83,7 @@ export default function App() {
         if (service.uuid.toUpperCase().includes('FFE0')) {
           const characteristics = await service.characteristics();
           for (const char of characteristics) {
-            if (
-              char.uuid.toUpperCase().includes('FFE1') &&
-              char.isWritableWithResponse
-            ) {
+            if (char.uuid.toUpperCase().includes('FFE1') && char.isWritableWithResponse) {
               const base64Command = Buffer.from(command, 'utf-8').toString('base64');
               await char.writeWithResponse(base64Command);
               Alert.alert('Verzonden', `Commando "${command}" verzonden`);
@@ -110,33 +99,19 @@ export default function App() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      await requestPermissions();
-    };
-    init();
-
-    return () => {
-      manager.destroy().catch((err) => {
-        console.error('❌ Cleanup error:', err);
-      });
-    };
+    requestPermissions();
+    return () => manager.destroy();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Button
-        title={scanning ? 'Scannen...' : 'Scan naar HMSoft'}
-        onPress={startScan}
-        disabled={scanning}
-      />
+      <Button title={scanning ? 'Scannen...' : 'Scan naar HMSoft'} onPress={startScan} disabled={scanning} />
 
       <FlatList
         data={devices}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Text style={styles.device}>
-            {item.name} ({item.id})
-          </Text>
+          <Text style={styles.device}>{item.name} ({item.id})</Text>
         )}
         style={{ marginTop: 20, maxHeight: 200, width: '100%' }}
       />
@@ -158,24 +133,15 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    alignItems: 'center',
+    flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center',
   },
   device: {
-    padding: 6,
-    fontSize: 16,
+    padding: 6, fontSize: 16,
   },
   commandBox: {
-    marginTop: 30,
-    width: '100%',
-    gap: 10,
+    marginTop: 30, width: '100%', gap: 10,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 6,
-    padding: 10,
+    borderWidth: 1, borderColor: '#aaa', borderRadius: 6, padding: 10,
   },
 });
