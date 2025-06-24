@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Button,
-    ActivityIndicator,
-    StyleSheet,
-} from 'react-native';
+import { View, Text, FlatList, Button, ActivityIndicator, StyleSheet } from 'react-native';
 
 export default function LogboekScreen() {
     const [logs, setLogs] = useState<any[]>([]);
