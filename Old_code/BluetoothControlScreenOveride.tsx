@@ -14,17 +14,17 @@ export default function BluetoothControlScreen({ username }: Props) {
   const [devices, setDevices] = useState<Device[]>([]);
   const [scanning, setScanning] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const [overrideConnected, setOverrideConnected] = useState(false); // NEW STATE
   const scanTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
-      if (Platform.Version >= 31) { // Android 12+
+      if (Platform.Version >= 31) {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         ]);
-
         if (
           granted['android.permission.BLUETOOTH_SCAN'] !== PermissionsAndroid.RESULTS.GRANTED ||
           granted['android.permission.BLUETOOTH_CONNECT'] !== PermissionsAndroid.RESULTS.GRANTED ||
@@ -50,6 +50,7 @@ export default function BluetoothControlScreen({ username }: Props) {
   };
 
   const startScan = async () => {
+    setOverrideConnected(false); // Disable override when scanning starts
     const state = await manager.state();
     if (state !== State.PoweredOn) {
       Alert.alert('Bluetooth uit', 'Zet Bluetooth aan om te kunnen scannen');
@@ -93,7 +94,6 @@ export default function BluetoothControlScreen({ username }: Props) {
 
       if (device && device.name) {
         setDevices((prev) => {
-          // Avoid duplicates by checking id uniqueness
           if (!prev.find((d) => d.id === device.id)) {
             return [...prev, device];
           }
@@ -112,46 +112,54 @@ export default function BluetoothControlScreen({ username }: Props) {
   };
 
   const sendCommand = async (value: string) => {
-  if (!connectedDevice) return;
+    // If using override mode, skip actual Bluetooth send, but still post to API
+    if (overrideConnected) {
+      try {
+        await fetch('https://to.internus.info/api/monkeyalpha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user: username, command: value }),
+        });
+        Alert.alert('Verzonden (Simulatie)', `Commando "${value}" verzonden door ${username}`);
+        console.log(`[LOG] ${new Date().toISOString()} | ${username} sent: "${value}" (simulated)`);
+      } catch (err) {
+        console.log('❌ Fout bij simulatie verzenden:', err);
+      }
+      return;
+    }
 
-  try {
-    const services = await connectedDevice.services();
-    for (const service of services) {
-      if (service.uuid.toUpperCase().includes('FFE0')) {
-        const characteristics = await service.characteristics();
-        for (const char of characteristics) {
-          if (
-            char.uuid.toUpperCase().includes('FFE1') &&
-            char.isWritableWithResponse
-          ) {
-            const base64Command = Buffer.from(value, 'utf-8').toString('base64');
-            await char.writeWithResponse(base64Command);
+    if (!connectedDevice) return;
+    try {
+      const services = await connectedDevice.services();
+      for (const service of services) {
+        if (service.uuid.toUpperCase().includes('FFE0')) {
+          const characteristics = await service.characteristics();
+          for (const char of characteristics) {
+            if (
+              char.uuid.toUpperCase().includes('FFE1') &&
+              char.isWritableWithResponse
+            ) {
+              const base64Command = Buffer.from(value, 'utf-8').toString('base64');
+              await char.writeWithResponse(base64Command);
 
-            const response = await fetch('https://to.internus.info/api/monkeyalpha', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ user: username, command: Number(value) }),
-            });
+              await fetch('https://to.internus.info/api/monkeyalpha', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user: username, command: value }),
+              });
 
-            if (!response.ok) {
-              Alert.alert('Fout', `Server gaf fout: ${response.status}`);
+              Alert.alert('Verzonden', `Commando "${value}" verzonden door ${username}`);
+              console.log(`[LOG] ${new Date().toISOString()} | ${username} sent: "${value}"`);
               return;
             }
-
-            Alert.alert('Verzonden', `Commando "${value}" verzonden door ${username}`);
-            console.log(`[LOG] ${new Date().toISOString()} | ${username} sent: "${value}"`);
-            return;
           }
         }
       }
-    }
-    Alert.alert('Niet gevonden', 'Geen juiste characteristic (FFE1) gevonden');
+      Alert.alert('Niet gevonden', 'Geen juiste characteristic (FFE1) gevonden');
     } catch (err) {
       console.log('❌ Fout bij verzenden:', err);
-      Alert.alert('Fout', 'Er is een fout opgetreden bij het verzenden van het commando');
     }
   };
-
 
   const renderButton = (label: string) => (
     <View style={bluetoothStyles.buttonWrapper} key={label}>
@@ -184,6 +192,16 @@ export default function BluetoothControlScreen({ username }: Props) {
       <Button
         title={scanning ? 'Scannen...' : 'Scan naar HMSoft'}
         onPress={startScan}
+        disabled={scanning || overrideConnected} // disable scan if override active
+      />
+
+      <Button
+        title="Gebruik commando's zonder verbinding"
+        onPress={() => {
+          setOverrideConnected(true);
+          setConnectedDevice(null);
+          setScanning(false);
+        }}
         disabled={scanning}
       />
 
@@ -198,7 +216,7 @@ export default function BluetoothControlScreen({ username }: Props) {
         style={{ marginTop: 20, maxHeight: 200, width: '100%' }}
       />
 
-      {connectedDevice && (
+      {(connectedDevice || overrideConnected) && (
         <View style={bluetoothStyles.commandBox}>
           <Text style={bluetoothStyles.keypadLabel}>Kies een commando:</Text>
 

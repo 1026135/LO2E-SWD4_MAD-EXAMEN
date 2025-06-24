@@ -9,7 +9,7 @@ export default function LogboekScreen() {
     const fetchLogs = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://to.internus.info/api/monkeyalpha/statistics');
+            const response = await fetch('https://to.internus.info/api/monkeyalpha');
             const data = await response.json();
             const logArray = Array.isArray(data) ? data : [data];
             setLogs(
