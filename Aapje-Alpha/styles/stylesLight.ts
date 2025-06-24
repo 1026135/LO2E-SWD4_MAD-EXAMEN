@@ -85,6 +85,16 @@ export const statistiekenStyles = StyleSheet.create({
   commandBox: { width: 50, alignItems: 'center', marginRight: 10, marginBottom: 6 },
   commandNumber: { fontSize: 16, fontWeight: 'bold' },
   commandCount: { fontSize: 14, color: '#555' },
+
+  statRow: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  statCount: {
+    fontWeight: 'bold',
+    color: '#333',
+  },
 });
 
 /* ----------------------- LogboekScreen Styles ----------------------- */
