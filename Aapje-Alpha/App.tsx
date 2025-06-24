@@ -1,3 +1,4 @@
+// App.tsx
 import React, { useState } from 'react';
 import {
   View, Text, Button, TouchableOpacity, StyleSheet
@@ -70,9 +71,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  topBar:     { flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', paddingHorizontal: 10, paddingVertical: 10, elevation: 2 },
+  topBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', paddingHorizontal: 10, paddingVertical: 10, elevation: 2 },
   menuButton: { marginRight: 15 },
-  menuText:   { fontSize: 24 },
-  username:   { fontSize: 16 },
-  sideMenu:   { backgroundColor: '#fff', padding: 10, elevation: 4, zIndex: 1 },
+  menuText: { fontSize: 24 },
+  username: { fontSize: 16 },
+  sideMenu: { backgroundColor: '#fff', padding: 10, elevation: 4, zIndex: 1 },
 });

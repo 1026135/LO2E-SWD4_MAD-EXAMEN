@@ -1,3 +1,4 @@
+// LogboekScreen.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, ActivityIndicator, StyleSheet } from 'react-native';
 

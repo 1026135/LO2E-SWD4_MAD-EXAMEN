@@ -1,3 +1,4 @@
+// BluetoothControlScreen.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Button, StyleSheet, Platform, PermissionsAndroid, Alert } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
         padding: 6,
         fontSize: 16,
     },
+
     commandBox: {
         marginTop: 30,
         width: '100%',
