@@ -59,8 +59,10 @@ export const bluetoothStyles = StyleSheet.create({
 });
 
 /* ----------------------- StatistiekenScreen Styles ----------------------- */
+import { StyleSheet } from 'react-native';
+
 export const statistiekenStyles = StyleSheet.create({
-   container: {
+  container: {
     flex: 1,
     padding: 20,
   },
@@ -69,17 +71,9 @@ export const statistiekenStyles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
-
-  citiesText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
-  },
-
   dayContainer: {
     marginBottom: 30,
   },
-
   statRow: {
     padding: 10,
     borderBottomWidth: 1,
@@ -89,7 +83,6 @@ export const statistiekenStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-
   periodSelector: {
     flexDirection: 'row',
     marginBottom: 15,
@@ -112,13 +105,11 @@ export const statistiekenStyles = StyleSheet.create({
   periodButtonTextActive: {
     color: 'white',
   },
-
   countText: {
     fontSize: 12,
     color: '#666',
     marginTop: 4,
   },
-
 });
 
 /* ----------------------- LogboekScreen Styles ----------------------- */
