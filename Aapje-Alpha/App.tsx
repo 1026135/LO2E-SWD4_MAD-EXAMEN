@@ -1,96 +1,60 @@
+// App.tsx
 import React, { useState } from 'react';
-import {
-  View, Text, Button, TouchableOpacity, StyleSheet
-} from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import BluetoothControlScreen from './screens/BluetoothControlScreen';
-import StatistiekenScreen from './screens/StatistiekenScreen';
 import LogboekScreen from './screens/LogboekScreen';
-import InstellingenScreen from './screens/InstellingenScreen';
-
-type Screen = 'home' | 'statistieken' | 'logboek' | 'instellingen';
+import StatistiekenScreen from './screens/StatistiekenScreen';
 
 export default function App() {
   const [username, setUsername] = useState('');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreen] = useState<'home' | 'logboek' | 'statistieken' | 'instellingen'>('home');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const logout = () => {
     setUsername('');
     setScreen('home');
-    setMenuOpen(false);
   };
 
-  if (!username) {
-    return <LoginScreen onLogin={setUsername} />;
-  }
+  const refreshLogs = () => setRefreshKey(prev => prev + 1);
 
-  const renderScreen = () => {
+  if (!username) return <LoginScreen onLogin={setUsername} />;
+
+  const renderContent = () => {
     switch (screen) {
-      case 'home':
-        return <BluetoothControlScreen username={username} />;
+      case 'logboek':
+        return <LogboekScreen refreshKey={refreshKey} />;
       case 'statistieken':
         return <StatistiekenScreen />;
-      case 'logboek':
-        return <LogboekScreen />;
       case 'instellingen':
-        return <InstellingenScreen />;
+        return <Text style={styles.page}>Instellingen (placeholder)</Text>;
       default:
-        return null;
+        return <BluetoothControlScreen username={username} refreshLogs={refreshLogs} />;
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Top bar */}
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => setMenuOpen(!menuOpen)} style={styles.menuButton}>
-          <Text style={styles.menuText}>☰</Text>
-        </TouchableOpacity>
-        <Text style={styles.username}>Ingelogd als {username}</Text>
+    <View style={styles.container}>
+      <View style={styles.menu}>
+        <Button title="Home" onPress={() => setScreen('home')} />
+        <Button title="Logboek" onPress={() => setScreen('logboek')} />
+        <Button title="Statistieken" onPress={() => setScreen('statistieken')} />
+        <Button title="Instellingen" onPress={() => setScreen('instellingen')} />
+        <Button title="Logout" onPress={logout} />
       </View>
-
-      {/* Side Menu */}
-      {menuOpen && (
-        <View style={styles.sideMenu}>
-          <Button title="🏠 Home" onPress={() => { setScreen('home'); setMenuOpen(false); }} />
-          <Button title="📊 Statistieken" onPress={() => { setScreen('statistieken'); setMenuOpen(false); }} />
-          <Button title="📜 Logboek" onPress={() => { setScreen('logboek'); setMenuOpen(false); }} />
-          <Button title="⚙️ Instellingen" onPress={() => { setScreen('instellingen'); setMenuOpen(false); }} />
-          <Button title="🚪 Uitloggen" onPress={logout} color="red" />
-        </View>
-      )}
-
-      {/* Main content */}
-      <View style={{ flex: 1 }}>
-        {renderScreen()}
-      </View>
+      <View style={styles.content}>{renderContent()}</View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  topBar: {
+  container: { flex: 1 },
+  menu: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#eee',
-    paddingHorizontal: 10,
+    justifyContent: 'space-around',
     paddingVertical: 10,
-    elevation: 2,
+    backgroundColor: '#eee',
   },
-  menuButton: {
-    marginRight: 15,
-  },
-  menuText: {
-    fontSize: 24,
-  },
-  username: {
-    fontSize: 16,
-  },
-  sideMenu: {
-    backgroundColor: '#fff',
-    padding: 10,
-    elevation: 4,
-    zIndex: 1,
-  },
+  content: { flex: 1, padding: 10 },
+  page: { fontSize: 20, padding: 20 },
 });
