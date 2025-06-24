@@ -154,34 +154,10 @@ export default function BluetoothControlScreen({ username }: Props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 50,
-        paddingHorizontal: 20,
-        alignItems: 'center',
-    },
-    device: {
-        padding: 6,
-        fontSize: 16,
-    },
-
-    commandBox: {
-        marginTop: 30,
-        width: '100%',
-    },
-    keypadLabel: {
-        marginBottom: 10,
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 5,
-    },
-    buttonWrapper: {
-        flex: 1,
-        marginHorizontal: 5,
-    },
+    container: { flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center' },
+    device: { padding: 6, fontSize: 16 },
+    commandBox: { marginTop: 30, width: '100%' },
+    keypadLabel: { marginBottom: 10, fontSize: 16, fontWeight: 'bold', textAlign: 'center' },
+    row: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 },
+    buttonWrapper: { flex: 1, marginHorizontal: 5 },
 });
