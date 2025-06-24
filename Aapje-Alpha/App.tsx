@@ -11,6 +11,13 @@ import InstellingenScreen from './screens/InstellingenScreen';
 
 type Screen = 'home' | 'statistieken' | 'logboek' | 'instellingen';
 
+const screenTitles: Record<Screen, string> = {
+  home: 'Dashboard',
+  statistieken: 'Statistieken',
+  logboek: 'Logboek',
+  instellingen: 'Instellingen',
+};
+
 export default function App() {
   const [username, setUsername] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,11 +52,15 @@ export default function App() {
     <View style={{ flex: 1 }}>
       {/* Top bar */}
       <View style={styles.topBar}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.screenTitle}>{screenTitles[screen]}</Text>
+          <Text style={styles.username}>Ingelogd als {username}</Text>
+        </View>
         <TouchableOpacity onPress={() => setMenuOpen(!menuOpen)} style={styles.menuButton}>
           <Text style={styles.menuText}>☰</Text>
         </TouchableOpacity>
-        <Text style={styles.username}>Ingelogd als {username}</Text>
       </View>
+
 
       {/* Side Menu */}
       {menuOpen && (
@@ -72,8 +83,11 @@ export default function App() {
 
 const styles = StyleSheet.create({
   topBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', paddingHorizontal: 10, paddingVertical: 10, elevation: 2 },
-  menuButton: { marginRight: 15 },
+  titleContainer: { flex: 1, alignItems: 'center' },
+  screenTitle: { fontSize: 22, fontWeight: 'bold' },
+  username: { fontSize: 14, color: '#555' },
+  menuButton: { padding: 10 },
   menuText: { fontSize: 24 },
-  username: { fontSize: 16 },
   sideMenu: { backgroundColor: '#fff', padding: 10, elevation: 4, zIndex: 1 },
 });
+
