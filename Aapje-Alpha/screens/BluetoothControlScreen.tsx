@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, FlatList, Button, TextInput, StyleSheet, Alert, Platform, PermissionsAndroid,
+  View,
+  Text,
+  FlatList,
+  Button,
+  StyleSheet,
+  Platform,
+  PermissionsAndroid,
+  Alert,
 } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
@@ -15,7 +22,6 @@ export default function BluetoothControlScreen({ username }: Props) {
   const [devices, setDevices] = useState<Device[]>([]);
   const [scanning, setScanning] = useState(false);
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
-  const [command, setCommand] = useState('');
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
@@ -55,8 +61,8 @@ export default function BluetoothControlScreen({ username }: Props) {
         }
       }
 
-      if (device && device.name && !devices.find(d => d.id === device.id)) {
-        setDevices(prev => [...prev, device]);
+      if (device && device.name && !devices.find((d) => d.id === device.id)) {
+        setDevices((prev) => [...prev, device]);
       }
     });
 
@@ -68,7 +74,7 @@ export default function BluetoothControlScreen({ username }: Props) {
     }, 10000);
   };
 
-  const sendCommand = async () => {
+  const sendCommand = async (value: string) => {
     if (!connectedDevice) return;
     try {
       const services = await connectedDevice.services();
@@ -76,11 +82,14 @@ export default function BluetoothControlScreen({ username }: Props) {
         if (service.uuid.toUpperCase().includes('FFE0')) {
           const characteristics = await service.characteristics();
           for (const char of characteristics) {
-            if (char.uuid.toUpperCase().includes('FFE1') && char.isWritableWithResponse) {
-              const base64Command = Buffer.from(command, 'utf-8').toString('base64');
+            if (
+              char.uuid.toUpperCase().includes('FFE1') &&
+              char.isWritableWithResponse
+            ) {
+              const base64Command = Buffer.from(value, 'utf-8').toString('base64');
               await char.writeWithResponse(base64Command);
-              Alert.alert('Verzonden', `Commando "${command}" verzonden door ${username}`);
-              console.log(`[LOG] ${new Date().toISOString()} | ${username} sent: "${command}"`);
+              Alert.alert('Verzonden', `Commando "${value}" verzonden door ${username}`);
+              console.log(`[LOG] ${new Date().toISOString()} | ${username} sent: "${value}"`);
               return;
             }
           }
@@ -92,6 +101,12 @@ export default function BluetoothControlScreen({ username }: Props) {
     }
   };
 
+  const renderButton = (label: string) => (
+    <View style={styles.buttonWrapper} key={label}>
+      <Button title={label} onPress={() => sendCommand(label)} />
+    </View>
+  );
+
   useEffect(() => {
     requestPermissions();
     return () => manager.destroy();
@@ -99,8 +114,11 @@ export default function BluetoothControlScreen({ username }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={{ marginBottom: 10 }}>Welkom, {username}!</Text>
-      <Button title={scanning ? 'Scannen...' : 'Scan naar HMSoft'} onPress={startScan} disabled={scanning} />
+      <Button
+        title={scanning ? 'Scannen...' : 'Scan naar HMSoft'}
+        onPress={startScan}
+        disabled={scanning}
+      />
 
       <FlatList
         data={devices}
@@ -113,13 +131,22 @@ export default function BluetoothControlScreen({ username }: Props) {
 
       {connectedDevice && (
         <View style={styles.commandBox}>
-          <TextInput
-            placeholder="Typ een commando, bijv: 1"
-            style={styles.input}
-            value={command}
-            onChangeText={setCommand}
-          />
-          <Button title="Verzend" onPress={sendCommand} />
+          <Text style={styles.keypadLabel}>Kies een commando:</Text>
+
+          <View style={styles.row}>
+            {['1', '2', '3'].map(renderButton)}
+          </View>
+          <View style={styles.row}>
+            {['4', '5', '6'].map(renderButton)}
+          </View>
+          <View style={styles.row}>
+            {['7', '8', '9'].map(renderButton)}
+          </View>
+          <View style={styles.row}>
+            <View style={{ flex: 1 }} />
+            {renderButton('0')}
+            <View style={{ flex: 1 }} />
+          </View>
         </View>
       )}
     </View>
@@ -128,15 +155,32 @@ export default function BluetoothControlScreen({ username }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center',
+    flex: 1,
+    paddingTop: 50,
+    paddingHorizontal: 20,
+    alignItems: 'center',
   },
   device: {
-    padding: 6, fontSize: 16,
+    padding: 6,
+    fontSize: 16,
   },
   commandBox: {
-    marginTop: 30, width: '100%', gap: 10,
+    marginTop: 30,
+    width: '100%',
   },
-  input: {
-    borderWidth: 1, borderColor: '#aaa', borderRadius: 6, padding: 10,
+  keypadLabel: {
+    marginBottom: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+  },
+  buttonWrapper: {
+    flex: 1,
+    marginHorizontal: 5,
   },
 });
