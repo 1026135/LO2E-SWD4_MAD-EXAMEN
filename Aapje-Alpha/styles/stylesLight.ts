@@ -59,8 +59,6 @@ export const bluetoothStyles = StyleSheet.create({
 });
 
 /* ----------------------- StatistiekenScreen Styles ----------------------- */
-import { StyleSheet } from 'react-native';
-
 export const statistiekenStyles = StyleSheet.create({
   container: {
     flex: 1,
