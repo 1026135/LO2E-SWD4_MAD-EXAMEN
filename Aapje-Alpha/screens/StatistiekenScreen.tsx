@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  Button,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { View, Text, Button, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { statistiekenStyles } from '../styles/stylesLight';
 
 type DailyStats = {
-  date: string;
+  date: string; // Format: 'YYYY-MM-DD'
   commands: Record<string, number>;
-  cities: Record<string, string[]>;
+};
+
+type GroupedStats = {
+  key: string; // Day / Month / Year
+  stats: DailyStats[];
+};
+
+const commandLabels: Record<string, string> = {
+  '0': 'Alles uitschakelen (rusttoestand)',
+  '1': 'Oogjes laten knipperen (LED links/rechts)',
+  '2': 'Knight Rider-effect mond aan',
+  '3': 'Hoofdje laten draaien',
+  '4': "Armpjes op- en neer bewegen (2 servo's)",
+  '5': 'Vooruit rijden',
+  '6': 'Achteruit rijden',
+  '7': 'Naar links draaien',
+  '8': 'Naar rechts draaien',
+  '9': 'Geluid afspelen (bijv. Intergalactic)',
 };
 
 export default function StatistiekenScreen() {
   const [stats, setStats] = useState<DailyStats[]>([]);
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState<'day' | 'month' | 'year'>('day');
 
   const fetchStats = async () => {
     setLoading(true);
@@ -37,39 +47,97 @@ export default function StatistiekenScreen() {
     fetchStats();
   }, []);
 
-  const renderCommand = (command: string, count: number, cities: string[]) => (
+  const getKey = (date: string): string => {
+    if (view === 'day') return date;
+    if (view === 'month') return date.slice(0, 7); // 'YYYY-MM'
+    return date.slice(0, 4); // 'YYYY'
+  };
+
+  const groupStats = (): GroupedStats[] => {
+    const grouped: Record<string, DailyStats[]> = {};
+    stats.forEach((entry) => {
+      const key = getKey(entry.date);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(entry);
+    });
+    return Object.entries(grouped).map(([key, stats]) => ({ key, stats }));
+  };
+
+  const mergeStats = (entries: DailyStats[]): DailyStats => {
+    const merged: DailyStats = {
+      date: entries[0].date,
+      commands: {},
+    };
+
+    entries.forEach(({ commands }) => {
+      for (const [cmd, count] of Object.entries(commands)) {
+        merged.commands[cmd] = (merged.commands[cmd] || 0) + count;
+      }
+    });
+
+    return merged;
+  };
+
+  const renderCommand = (command: string, count: number) => (
     <TouchableOpacity key={command} style={statistiekenStyles.statRow}>
       <Text>
-        Commando {command}:{' '}
+        {commandLabels[command] || `Commando ${command}`}:{' '}
         <Text style={statistiekenStyles.statCount}>{count}</Text>
       </Text>
-      {cities.length > 0 && (
-        <Text style={styles.citiesText}>Steden: {cities.join(', ')}</Text>
-      )}
+      <Text style={statistiekenStyles.countText}>Aantal keren verzonden: {count}</Text>
     </TouchableOpacity>
   );
 
-  const renderDay = ({ item }: { item: DailyStats }) => (
-    <View style={styles.dayContainer}>
-      <Text style={statistiekenStyles.title}>Datum: {item.date}</Text>
-      {Object.entries(item.commands).map(([command, count]) =>
-        renderCommand(command, count, item.cities[command] || [])
-      )}
-    </View>
-  );
+  const renderDay = ({ item }: { item: GroupedStats }) => {
+    const merged = mergeStats(item.stats);
+    return (
+      <View style={statistiekenStyles.dayContainer}>
+        <Text style={statistiekenStyles.title}>
+          {view === 'day' ? `Datum` : view === 'month' ? `Maand` : `Jaar`}: {item.key}
+        </Text>
+        {Object.entries(merged.commands).map(([cmd, count]) =>
+          renderCommand(cmd, count)
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={statistiekenStyles.container}>
       <Text style={statistiekenStyles.title}>Statistieken</Text>
+
+      <View style={statistiekenStyles.periodSelector}>
+        {(['day', 'month', 'year'] as const).map((period) => (
+          <TouchableOpacity
+            key={period}
+            style={[
+              statistiekenStyles.periodButton,
+              view === period && statistiekenStyles.periodButtonActive,
+            ]}
+            onPress={() => setView(period)}
+          >
+            <Text
+              style={[
+                statistiekenStyles.periodButtonText,
+                view === period && statistiekenStyles.periodButtonTextActive,
+              ]}
+            >
+              {period === 'day' ? 'Dag' : period === 'month' ? 'Maand' : 'Jaar'}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <Button title="Ververs statistieken" onPress={fetchStats} />
+
       {loading ? (
         <ActivityIndicator style={{ marginTop: 20 }} />
       ) : stats.length === 0 ? (
         <Text style={{ marginTop: 20 }}>Geen statistieken beschikbaar.</Text>
       ) : (
         <FlatList
-          data={stats}
-          keyExtractor={(item) => item.date}
+          data={groupStats()}
+          keyExtractor={(item) => item.key}
           renderItem={renderDay}
           style={{ marginTop: 20 }}
           contentContainerStyle={{ paddingBottom: 20 }}
@@ -78,15 +146,3 @@ export default function StatistiekenScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  dayContainer: {
-    marginBottom: 30,
-  },
-  citiesText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 2,
-    marginLeft: 10,
-  },
-});

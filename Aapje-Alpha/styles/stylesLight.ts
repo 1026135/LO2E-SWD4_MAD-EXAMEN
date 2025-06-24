@@ -60,31 +60,25 @@ export const bluetoothStyles = StyleSheet.create({
 
 /* ----------------------- StatistiekenScreen Styles ----------------------- */
 export const statistiekenStyles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-  periodSelector: { flexDirection: 'row', marginBottom: 15 },
-  periodButton: {
+   container: {
     flex: 1,
-    padding: 10,
-    marginHorizontal: 5,
-    borderRadius: 6,
-    backgroundColor: '#ddd',
-    alignItems: 'center',
+    padding: 20,
   },
-  periodButtonActive: { backgroundColor: '#4287f5' },
-  periodButtonText: { color: '#333', fontWeight: 'bold' },
-  periodButtonTextActive: { color: 'white' },
-  userBlock: {
-    marginBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingBottom: 10,
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
-  userTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 6 },
-  commandsRow: { flexDirection: 'row', flexWrap: 'wrap' },
-  commandBox: { width: 50, alignItems: 'center', marginRight: 10, marginBottom: 6 },
-  commandNumber: { fontSize: 16, fontWeight: 'bold' },
-  commandCount: { fontSize: 14, color: '#555' },
+
+  citiesText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+
+  dayContainer: {
+    marginBottom: 30,
+  },
 
   statRow: {
     padding: 10,
@@ -95,6 +89,36 @@ export const statistiekenStyles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+
+  periodSelector: {
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  periodButton: {
+    flex: 1,
+    padding: 10,
+    marginHorizontal: 5,
+    borderRadius: 6,
+    backgroundColor: '#ddd',
+    alignItems: 'center',
+  },
+  periodButtonActive: {
+    backgroundColor: '#4287f5',
+  },
+  periodButtonText: {
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  periodButtonTextActive: {
+    color: 'white',
+  },
+
+  countText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 4,
+  },
+
 });
 
 /* ----------------------- LogboekScreen Styles ----------------------- */
