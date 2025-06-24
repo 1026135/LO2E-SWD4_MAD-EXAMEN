@@ -83,7 +83,6 @@ export default function StatistiekenScreen() {
     <TouchableOpacity key={command} style={statistiekenStyles.statRow}>
       <Text>
         {commandLabels[command] || `Commando ${command}`}:{' '}
-        <Text style={statistiekenStyles.statCount}>{count}</Text>
       </Text>
       <Text style={statistiekenStyles.countText}>Aantal keren verzonden: {count}</Text>
     </TouchableOpacity>

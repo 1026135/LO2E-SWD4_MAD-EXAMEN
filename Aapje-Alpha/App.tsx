@@ -8,6 +8,8 @@ import LogboekScreen from './screens/LogboekScreen';
 import InstellingenScreen from './screens/InstellingenScreen';
 
 import { appStyles } from './styles/stylesLight';
+import MenuGlassButton from './components/MenuGlassButton';
+
 
 type Screen = 'home' | 'statistieken' | 'logboek' | 'instellingen';
 
@@ -64,13 +66,15 @@ export default function App() {
       {/* Side Menu */}
       {menuOpen && (
         <View style={appStyles.sideMenu}>
-          <Button title="🏠 Home" onPress={() => { setScreen('home'); setMenuOpen(false); }} />
-          <Button title="📊 Statistieken" onPress={() => { setScreen('statistieken'); setMenuOpen(false); }} />
-          <Button title="📜 Logboek" onPress={() => { setScreen('logboek'); setMenuOpen(false); }} />
-          <Button title="⚙️ Instellingen" onPress={() => { setScreen('instellingen'); setMenuOpen(false); }} />
-          <Button title="🚪 Uitloggen" onPress={logout} color="red" />
+          <MenuGlassButton title="🏠 Home" onPress={() => { setScreen('home'); setMenuOpen(false); }} />
+          <MenuGlassButton title="📊 Statistieken" onPress={() => { setScreen('statistieken'); setMenuOpen(false); }} />
+          <MenuGlassButton title="📜 Logboek" onPress={() => { setScreen('logboek'); setMenuOpen(false); }} />
+          <MenuGlassButton title="⚙️ Instellingen" onPress={() => { setScreen('instellingen'); setMenuOpen(false); }} />
+          <MenuGlassButton title="🚪 Uitloggen" red onPress={logout} />
         </View>
       )}
+
+
 
       {/* Main content */}
       <View style={{ flex: 1 }}>

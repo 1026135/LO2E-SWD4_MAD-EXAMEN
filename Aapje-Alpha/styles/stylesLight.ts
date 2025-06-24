@@ -50,11 +50,22 @@ export const appStyles = StyleSheet.create({
     padding: 15,
     elevation: 8,
     zIndex: 10,
-    borderRadius: 10,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,
     shadowRadius: 5,
+  },
+  sideMenuButton: {
+    paddingVertical: 2,
+    paddingHorizontal: 20,
+    marginBottom: 2,
+  },
+  logoutButton: {
+    backgroundColor: 'rgba(255, 0, 0, 0.25)',
+    borderColor: 'rgba(255, 0, 0, 0.5)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginTop: 12,
   },
 });
 
@@ -292,7 +303,7 @@ export const instellingenStyles = StyleSheet.create({
 //  },
 //});
 
-/* ----------------------- glassButtonStyles (green glass) ----------------------- */
+/* ----------------------- glassButtonStyles ----------------------- */
 export const glassButtonStyles = StyleSheet.create({
   button: {
     backgroundColor: 'rgba(76, 140, 43, 0.25)',  // semi-transparent leafy green (#4C8C2B)
@@ -318,3 +329,37 @@ export const glassButtonStyles = StyleSheet.create({
   },
 });
 
+/* ----------------------- menuButtonStyles ----------------------- */
+export const menuButtonStyles = StyleSheet.create({
+  button: {
+    backgroundColor: 'rgba(76, 140, 43, 0.25)',     // leafy green
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(76, 140, 43, 0.7)',
+    paddingVertical: 4,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: 'rgba(76, 140, 43, 0.5)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    marginVertical: 8,
+    marginHorizontal: 10,
+  },
+  buttonText: {
+    color: '#F0E6A2',
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+  redButton: {
+    backgroundColor: 'rgba(200, 50, 50, 0.25)',
+    borderColor: 'rgba(200, 50, 50, 0.7)',
+    shadowColor: 'rgba(200, 50, 50, 0.5)',
+  },
+  redText: {
+    color: '#F9B2B2',
+  },
+});
