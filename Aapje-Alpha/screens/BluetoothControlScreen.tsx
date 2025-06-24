@@ -22,7 +22,7 @@ export default function BluetoothControlScreen({ username }: Props) {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, // often needed for BLE
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         ]);
 
         if (
@@ -91,16 +91,17 @@ export default function BluetoothControlScreen({ username }: Props) {
         }
       }
 
-      if (
-        device &&
-        device.name &&
-        !devices.find((d) => d.id === device.id)
-      ) {
-        setDevices((prev) => [...prev, device]);
+      if (device && device.name) {
+        setDevices((prev) => {
+          // Avoid duplicates by checking id uniqueness
+          if (!prev.find((d) => d.id === device.id)) {
+            return [...prev, device];
+          }
+          return prev;
+        });
       }
     });
 
-    // Stop scan na 10 seconden
     scanTimeoutRef.current = setTimeout(() => {
       if (scanning) {
         manager.stopDeviceScan();
@@ -180,7 +181,7 @@ export default function BluetoothControlScreen({ username }: Props) {
 
       <FlatList
         data={devices}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id ?? index.toString()}
         renderItem={({ item }) => (
           <Text style={bluetoothStyles.device}>
             {item.name} ({item.id})
