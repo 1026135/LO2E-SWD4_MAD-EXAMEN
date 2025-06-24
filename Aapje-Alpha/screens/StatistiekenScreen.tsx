@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { statistiekenStyles } from '../styles/stylesLight';
+import GlassButton from '../components/GlassButton';
 
 type DailyStats = {
   date: string; // Format: 'YYYY-MM-DD'
@@ -128,7 +129,11 @@ export default function StatistiekenScreen() {
         ))}
       </View>
 
-      <Button title="Ververs statistieken" onPress={fetchStats} />
+      <GlassButton
+        onPress={fetchStats}
+        title="Ververs statistieken"
+        style={{ marginTop: 12, alignSelf: 'center', width: '65%' }}
+      />
 
       {loading ? (
         <ActivityIndicator style={{ marginTop: 20 }} />

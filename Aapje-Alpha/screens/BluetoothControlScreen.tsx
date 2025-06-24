@@ -3,6 +3,7 @@ import { View, Text, FlatList, Button, Platform, PermissionsAndroid, Alert } fro
 import { BleManager, Device, State } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
 import { bluetoothStyles } from '../styles/stylesLight';
+import GlassButton from '../components/GlassButton';
 
 const manager = new BleManager();
 
