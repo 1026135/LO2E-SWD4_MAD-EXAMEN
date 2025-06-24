@@ -59,11 +59,11 @@ export default function LogboekScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 },
-    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-    logItem: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#ddd' },
-    row: { fontSize: 15, marginBottom: 2 },
-    bold: { fontWeight: 'bold' },
-    command: { fontWeight: 'bold', fontSize: 16 },
-    timestamp: { fontSize: 12, color: '#666', marginTop: 4 },
+    container:  { flex: 1, padding: 20 },
+    title:      { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
+    logItem:    { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#ddd' },
+    row:        { fontSize: 15, marginBottom: 2 },
+    bold:       { fontWeight: 'bold' },
+    command:    { fontWeight: 'bold', fontSize: 16 },
+    timestamp:  { fontSize: 12, color: '#666', marginTop: 4 },
 });
