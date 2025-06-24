@@ -11,7 +11,7 @@ export const appStyles = StyleSheet.create({
     paddingVertical: 10,
     elevation: 2,
   },
-  titleContainer: { flex: 1, alignItems: 'center' },
+  titleContainer: { flex: 1, alignItems: 'flex-start' },
   screenTitle: { fontSize: 22, fontWeight: 'bold' },
   username: { fontSize: 14, color: '#555' },
   menuButton: { padding: 10 },
@@ -122,7 +122,7 @@ export const logboekStyles = StyleSheet.create({
 });
 
 /* ----------------------- InstellingenScreen Styles ----------------------- */
-export const InstellingenStyles = StyleSheet.create({
+export const instellingenStyles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
@@ -131,6 +131,20 @@ export const InstellingenStyles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 20,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '60%',
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 18,
+  },
+  statusText: {
+    fontSize: 18,
+    marginTop: 10,
   },
 });
