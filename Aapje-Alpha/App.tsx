@@ -1,8 +1,7 @@
 // App.tsx
 import React, { useState } from 'react';
-import {
-  View, Text, Button, TouchableOpacity, StyleSheet
-} from 'react-native';
+import { View, Text, Button, TouchableOpacity, StyleSheet } from 'react-native';
+
 import LoginScreen from './screens/LoginScreen';
 import BluetoothControlScreen from './screens/BluetoothControlScreen';
 import StatistiekenScreen from './screens/StatistiekenScreen';
