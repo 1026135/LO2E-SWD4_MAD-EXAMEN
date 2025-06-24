@@ -10,7 +10,12 @@ export default function LogboekScreen() {
         try {
             const response = await fetch('https://to.internus.info/api/monkeyalpha/statistics');
             const data = await response.json();
-            setLogs(data.logs || data); // Adjust if needed
+            const logArray = Array.isArray(data) ? data : [data];
+            setLogs(
+                logArray.sort(
+                    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                )
+            );
         } catch (error) {
             console.error('❌ Fout bij ophalen logs:', error);
         }
@@ -27,19 +32,24 @@ export default function LogboekScreen() {
             <Button title="Ververs logboek" onPress={fetchLogs} />
             {loading ? (
                 <ActivityIndicator style={{ marginTop: 20 }} />
+            ) : logs.length === 0 ? (
+                <Text style={{ marginTop: 20 }}>Geen logboekgegevens beschikbaar.</Text>
             ) : (
                 <FlatList
                     data={logs}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item) => item.id?.toString()}
                     contentContainerStyle={{ paddingTop: 20 }}
                     renderItem={({ item }) => (
                         <View style={styles.logItem}>
-                            <Text>
-                                <Text style={styles.bold}>{item.user || 'Onbekend'}</Text> stuurde: <Text style={styles.code}>{item.command}</Text>
+                            <Text style={styles.row}>
+                                👤 <Text style={styles.bold}>{item.user}</Text>
                             </Text>
-                            {item.timestamp && (
-                                <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleString()}</Text>
-                            )}
+                            <Text style={styles.row}>
+                                🔘 Commando: <Text style={styles.command}>{item.command}</Text>
+                            </Text>
+                            <Text style={styles.timestamp}>
+                                🕒 {new Date(item.timestamp).toLocaleString()}
+                            </Text>
                         </View>
                     )}
                 />
@@ -51,8 +61,9 @@ export default function LogboekScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1, padding: 20 },
     title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-    logItem: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#ddd' },
+    logItem: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#ddd' },
+    row: { fontSize: 15, marginBottom: 2 },
     bold: { fontWeight: 'bold' },
-    code: { fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace' },
-    timestamp: { fontSize: 12, color: '#666' },
+    command: { fontWeight: 'bold', fontSize: 16 },
+    timestamp: { fontSize: 12, color: '#666', marginTop: 4 },
 });
