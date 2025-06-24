@@ -32,7 +32,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 }
 
 const styles = StyleSheet.create({
-    container:  { flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center' },
-    title:      { fontSize: 20, marginBottom: 20 },
-    input:      { borderWidth: 1, borderColor: '#aaa', borderRadius: 6, padding: 10, width: '100%', marginBottom: 10 },
+    container: { flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center' },
+    title: { fontSize: 20, marginBottom: 20 },
+    input: { borderWidth: 1, borderColor: '#aaa', borderRadius: 6, padding: 10, width: '100%', marginBottom: 10 },
 });
