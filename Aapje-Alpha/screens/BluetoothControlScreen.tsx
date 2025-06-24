@@ -1,8 +1,8 @@
-// BluetoothControlScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Platform, PermissionsAndroid, Alert } from 'react-native';
+import { View, Text, FlatList, Button, Platform, PermissionsAndroid, Alert } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
+import { bluetoothStyles } from '../styles/stylesLight';
 
 const manager = new BleManager();
 
@@ -100,9 +100,8 @@ export default function BluetoothControlScreen({ username }: Props) {
         }
     };
 
-
     const renderButton = (label: string) => (
-        <View style={styles.buttonWrapper} key={label}>
+        <View style={bluetoothStyles.buttonWrapper} key={label}>
             <Button title={label} onPress={() => sendCommand(label)} />
         </View>
     );
@@ -113,7 +112,7 @@ export default function BluetoothControlScreen({ username }: Props) {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View style={bluetoothStyles.container}>
             <Button
                 title={scanning ? 'Scannen...' : 'Scan naar HMSoft'}
                 onPress={startScan}
@@ -124,25 +123,25 @@ export default function BluetoothControlScreen({ username }: Props) {
                 data={devices}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <Text style={styles.device}>{item.name} ({item.id})</Text>
+                    <Text style={bluetoothStyles.device}>{item.name} ({item.id})</Text>
                 )}
                 style={{ marginTop: 20, maxHeight: 200, width: '100%' }}
             />
 
             {connectedDevice && (
-                <View style={styles.commandBox}>
-                    <Text style={styles.keypadLabel}>Kies een commando:</Text>
+                <View style={bluetoothStyles.commandBox}>
+                    <Text style={bluetoothStyles.keypadLabel}>Kies een commando:</Text>
 
-                    <View style={styles.row}>
+                    <View style={bluetoothStyles.row}>
                         {['1', '2', '3'].map(renderButton)}
                     </View>
-                    <View style={styles.row}>
+                    <View style={bluetoothStyles.row}>
                         {['4', '5', '6'].map(renderButton)}
                     </View>
-                    <View style={styles.row}>
+                    <View style={bluetoothStyles.row}>
                         {['7', '8', '9'].map(renderButton)}
                     </View>
-                    <View style={styles.row}>
+                    <View style={bluetoothStyles.row}>
                         <View style={{ flex: 1 }} />
                         {renderButton('0')}
                         <View style={{ flex: 1 }} />
@@ -152,12 +151,3 @@ export default function BluetoothControlScreen({ username }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center' },
-    device: { padding: 6, fontSize: 16 },
-    commandBox: { marginTop: 30, width: '100%' },
-    keypadLabel: { marginBottom: 10, fontSize: 16, fontWeight: 'bold', textAlign: 'center' },
-    row: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 },
-    buttonWrapper: { flex: 1, marginHorizontal: 5 },
-});

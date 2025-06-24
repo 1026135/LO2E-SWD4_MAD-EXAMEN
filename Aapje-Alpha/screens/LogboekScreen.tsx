@@ -1,6 +1,6 @@
-// LogboekScreen.tsx
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Button, ActivityIndicator } from 'react-native';
+import { logboekStyles } from '../styles/stylesLight';
 
 export default function LogboekScreen() {
     const [logs, setLogs] = useState<any[]>([]);
@@ -28,8 +28,8 @@ export default function LogboekScreen() {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Logboek</Text>
+        <View style={logboekStyles.container}>
+            <Text style={logboekStyles.title}>Logboek</Text>
             <Button title="Ververs logboek" onPress={fetchLogs} />
             {loading ? (
                 <ActivityIndicator style={{ marginTop: 20 }} />
@@ -41,14 +41,14 @@ export default function LogboekScreen() {
                     keyExtractor={(item) => item.id?.toString()}
                     contentContainerStyle={{ paddingTop: 20 }}
                     renderItem={({ item }) => (
-                        <View style={styles.logItem}>
-                            <Text style={styles.row}>
-                                👤 <Text style={styles.bold}>{item.user}</Text>
+                        <View style={logboekStyles.logItem}>
+                            <Text style={logboekStyles.row}>
+                                👤 <Text style={logboekStyles.bold}>{item.user}</Text>
                             </Text>
-                            <Text style={styles.row}>
-                                🔘 Commando: <Text style={styles.command}>{item.command}</Text>
+                            <Text style={logboekStyles.row}>
+                                🔘 Commando: <Text style={logboekStyles.command}>{item.command}</Text>
                             </Text>
-                            <Text style={styles.timestamp}>
+                            <Text style={logboekStyles.timestamp}>
                                 🕒 {new Date(item.timestamp).toLocaleString()}
                             </Text>
                         </View>
@@ -58,13 +58,3 @@ export default function LogboekScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20 },
-    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-    logItem: { paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#ddd' },
-    row: { fontSize: 15, marginBottom: 2 },
-    bold: { fontWeight: 'bold' },
-    command: { fontWeight: 'bold', fontSize: 16 },
-    timestamp: { fontSize: 12, color: '#666', marginTop: 4 },
-});

@@ -1,6 +1,6 @@
-// LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Alert } from 'react-native';
+import { loginStyles } from '../styles/stylesLight';
 
 interface LoginScreenProps {
     onLogin: (username: string) => void;
@@ -18,21 +18,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Log in</Text>
+        <View style={loginStyles.container}>
+            <Text style={loginStyles.title}>Log in</Text>
             <TextInput
                 placeholder="Gebruikersnaam"
                 value={username}
                 onChangeText={setUsername}
-                style={styles.input}
+                style={loginStyles.input}
             />
             <Button title="Inloggen" onPress={handleLogin} />
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, paddingTop: 50, paddingHorizontal: 20, alignItems: 'center' },
-    title: { fontSize: 20, marginBottom: 20 },
-    input: { borderWidth: 1, borderColor: '#aaa', borderRadius: 6, padding: 10, width: '100%', marginBottom: 10 },
-});
