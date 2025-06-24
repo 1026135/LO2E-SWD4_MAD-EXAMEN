@@ -43,13 +43,13 @@ export default function LogboekScreen() {
                     renderItem={({ item }) => (
                         <View style={logboekStyles.logItem}>
                             <Text style={logboekStyles.row}>
-                                👤 <Text style={logboekStyles.bold}>{item.user}</Text>
+                                Gebruiker: <Text style={logboekStyles.bold}>{item.user}</Text>
                             </Text>
                             <Text style={logboekStyles.row}>
-                                🔘 Commando: <Text style={logboekStyles.command}>{item.command}</Text>
+                                Commando: <Text style={logboekStyles.command}>{item.command}</Text>
                             </Text>
                             <Text style={logboekStyles.timestamp}>
-                                🕒 {new Date(item.timestamp).toLocaleString()}
+                                Datum {new Date(item.timestamp).toLocaleString()}
                             </Text>
                         </View>
                     )}
