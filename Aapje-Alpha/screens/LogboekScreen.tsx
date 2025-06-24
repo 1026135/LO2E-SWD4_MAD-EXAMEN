@@ -1,14 +1,6 @@
 // screens/LogboekScreen.tsx
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Button,
-    ActivityIndicator,
-    StyleSheet,
-    RefreshControl,
-} from 'react-native';
+import { View, Text, FlatList, Button, ActivityIndicator, StyleSheet, RefreshControl } from 'react-native';
 
 export default function LogboekScreen() {
     const [logs, setLogs] = useState<any[]>([]);
@@ -18,7 +10,7 @@ export default function LogboekScreen() {
     const fetchLogs = async () => {
         setLoading(true);
         try {
-            const response = await fetch('https://to.internus.info/api/monkeyalpha/statistics'); // or your logs endpoint
+            const response = await fetch('https://to.internus.info/api/monkeyalpha/statistics');
             const data = await response.json();
             // Assuming data is an array of logs or contains logs
             setLogs(data.logs || data); // Adjust this based on your API response shape

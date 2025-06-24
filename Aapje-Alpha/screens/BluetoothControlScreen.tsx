@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    FlatList,
-    Button,
-    StyleSheet,
-    Platform,
-    PermissionsAndroid,
-    Alert,
-} from 'react-native';
+import { View, Text, FlatList, Button, StyleSheet, Platform, PermissionsAndroid, Alert } from 'react-native';
 import { BleManager, Device } from 'react-native-ble-plx';
 import { Buffer } from 'buffer';
 
