@@ -66,11 +66,11 @@ export default function App() {
       {/* Side Menu */}
       {menuOpen && (
         <View style={appStyles.sideMenu}>
-          <MenuGlassButton title="🏠 Home" onPress={() => { setScreen('home'); setMenuOpen(false); }} />
-          <MenuGlassButton title="📊 Statistieken" onPress={() => { setScreen('statistieken'); setMenuOpen(false); }} />
-          <MenuGlassButton title="📜 Logboek" onPress={() => { setScreen('logboek'); setMenuOpen(false); }} />
-          <MenuGlassButton title="⚙️ Instellingen" onPress={() => { setScreen('instellingen'); setMenuOpen(false); }} />
-          <MenuGlassButton title="🚪 Uitloggen" red onPress={logout} />
+          <MenuGlassButton title="Home" onPress={() => { setScreen('home'); setMenuOpen(false); }} />
+          <MenuGlassButton title="Statistieken" onPress={() => { setScreen('statistieken'); setMenuOpen(false); }} />
+          <MenuGlassButton title="Logboek" onPress={() => { setScreen('logboek'); setMenuOpen(false); }} />
+          <MenuGlassButton title="Instellingen" onPress={() => { setScreen('instellingen'); setMenuOpen(false); }} />
+          <MenuGlassButton title="Uitloggen" red onPress={logout} />
         </View>
       )}
 
