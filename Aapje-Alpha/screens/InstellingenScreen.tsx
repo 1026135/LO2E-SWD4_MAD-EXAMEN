@@ -9,7 +9,7 @@ export default function InstellingenScreen() {
 
   return (
     <View style={instellingenStyles.container}>
-      <Text style={instellingenStyles.title}>⚙️ Instellingen</Text>
+      <Text style={instellingenStyles.title}>Instellingen</Text>
 
       <View style={instellingenStyles.toggleGroup}>
         <Text style={instellingenStyles.label}>Toggle optie</Text>
