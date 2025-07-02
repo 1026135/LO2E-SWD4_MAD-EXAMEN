@@ -147,7 +147,7 @@ export default function BluetoothControlScreen({ username }: Props) {
     }
     Alert.alert('Niet gevonden', 'Geen juiste characteristic (FFE1) gevonden');
     } catch (err) {
-      console.log('❌ Fout bij verzenden:', err);
+      console.log('Fout bij verzenden:', err);
       Alert.alert('Fout', 'Er is een fout opgetreden bij het verzenden van het commando');
     }
   };
