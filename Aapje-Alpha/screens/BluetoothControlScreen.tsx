@@ -63,7 +63,7 @@ export default function BluetoothControlScreen({ username }: Props) {
 
     manager.startDeviceScan(null, null, async (error, device) => {
       if (error) {
-        console.log('❌ Scan-fout:', error);
+        console.log('Scan-fout:', error);
         setScanning(false);
         if (scanTimeoutRef.current) {
           clearTimeout(scanTimeoutRef.current);
@@ -87,7 +87,7 @@ export default function BluetoothControlScreen({ username }: Props) {
           setConnectedDevice(connected);
           Alert.alert('Verbonden', `Met ${device.name}`);
         } catch (err) {
-          console.log('❌ Verbindingsfout:', err);
+          console.log('Verbindingsfout:', err);
           Alert.alert('Fout', 'Kan niet verbinden met HMSoft');
         }
       }
