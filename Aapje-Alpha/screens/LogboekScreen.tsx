@@ -19,7 +19,7 @@ export default function LogboekScreen() {
         )
       );
     } catch (error) {
-      console.error('❌ Fout bij ophalen logs:', error);
+      console.error('Fout bij ophalen logs:', error);
     }
     setLoading(false);
   };
