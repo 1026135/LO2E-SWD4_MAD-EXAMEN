@@ -19,7 +19,7 @@ export default function BluetoothControlScreen({ username }: Props) {
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
-      if (Platform.Version >= 31) { // Android 12+
+      if (Platform.Version >= 31) {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
@@ -73,7 +73,7 @@ export default function BluetoothControlScreen({ username }: Props) {
       }
 
       if (device?.name?.includes('HMSoft')) {
-        console.log(`✅ HMSoft gevonden: ${device.name}`);
+        console.log(`HMSoft gevonden: ${device.name}`);
         manager.stopDeviceScan();
         setScanning(false);
         if (scanTimeoutRef.current) {
@@ -94,7 +94,6 @@ export default function BluetoothControlScreen({ username }: Props) {
 
       if (device && device.name) {
         setDevices((prev) => {
-          // Avoid duplicates by checking id uniqueness
           if (!prev.find((d) => d.id === device.id)) {
             return [...prev, device];
           }
