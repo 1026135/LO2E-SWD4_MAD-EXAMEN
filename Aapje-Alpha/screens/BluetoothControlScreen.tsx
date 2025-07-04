@@ -19,7 +19,7 @@ export default function BluetoothControlScreen({ username }: Props) {
 
   const requestPermissions = async () => {
     if (Platform.OS === 'android') {
-      if (Platform.Version >= 31) { // Android 12+
+      if (Platform.Version >= 31) {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
@@ -63,7 +63,7 @@ export default function BluetoothControlScreen({ username }: Props) {
 
     manager.startDeviceScan(null, null, async (error, device) => {
       if (error) {
-        console.log('❌ Scan-fout:', error);
+        console.log('Scan-fout:', error);
         setScanning(false);
         if (scanTimeoutRef.current) {
           clearTimeout(scanTimeoutRef.current);
@@ -73,7 +73,7 @@ export default function BluetoothControlScreen({ username }: Props) {
       }
 
       if (device?.name?.includes('HMSoft')) {
-        console.log(`✅ HMSoft gevonden: ${device.name}`);
+        console.log(`HMSoft gevonden: ${device.name}`);
         manager.stopDeviceScan();
         setScanning(false);
         if (scanTimeoutRef.current) {
@@ -87,14 +87,13 @@ export default function BluetoothControlScreen({ username }: Props) {
           setConnectedDevice(connected);
           Alert.alert('Verbonden', `Met ${device.name}`);
         } catch (err) {
-          console.log('❌ Verbindingsfout:', err);
+          console.log('Verbindingsfout:', err);
           Alert.alert('Fout', 'Kan niet verbinden met HMSoft');
         }
       }
 
       if (device && device.name) {
         setDevices((prev) => {
-          // Avoid duplicates by checking id uniqueness
           if (!prev.find((d) => d.id === device.id)) {
             return [...prev, device];
           }
@@ -148,7 +147,7 @@ export default function BluetoothControlScreen({ username }: Props) {
     }
     Alert.alert('Niet gevonden', 'Geen juiste characteristic (FFE1) gevonden');
     } catch (err) {
-      console.log('❌ Fout bij verzenden:', err);
+      console.log('Fout bij verzenden:', err);
       Alert.alert('Fout', 'Er is een fout opgetreden bij het verzenden van het commando');
     }
   };

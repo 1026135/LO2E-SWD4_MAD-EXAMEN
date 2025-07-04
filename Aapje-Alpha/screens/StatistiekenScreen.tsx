@@ -38,7 +38,7 @@ export default function StatistiekenScreen() {
       const data: DailyStats[] = await response.json();
       setStats(data);
     } catch (error) {
-      console.error('❌ Fout bij ophalen statistieken:', error);
+      console.error('Fout bij ophalen statistieken:', error);
       setStats([]);
     }
     setLoading(false);
